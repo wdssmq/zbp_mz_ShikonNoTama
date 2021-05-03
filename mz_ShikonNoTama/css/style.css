@@ -1,0 +1,29 @@
+#divMain2 {
+  margin-bottom: 3rem;
+}
+
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+
+.gray-1 {
+  color: #808080;
+}
+
+.mz-snt-item.gray-1 {
+  border-left: 1px solid #808080;
+  padding-left: 0.3rem;
+}
+
+div.mz-snt-item p {
+  margin-bottom: 1rem;
+}
+
+.mz-snt-box:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.mz-snt-box.mz-snt-tool {
+  margin-bottom: 1.3rem;
+}
