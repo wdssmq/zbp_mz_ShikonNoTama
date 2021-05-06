@@ -4,7 +4,14 @@ RegisterPlugin("mz_ShikonNoTama", "ActivePlugin_mz_ShikonNoTama");
 
 function ActivePlugin_mz_ShikonNoTama()
 {
-  Add_Filter_Plugin('Filter_Plugin_ViewFeed_End', 'mz_ShikonNoTama_Run');
+  Add_Filter_Plugin('Filter_Plugin_Feed_End', 'mz_ShikonNoTama_Run');
+  Add_Filter_Plugin('Filter_Plugin_Admin_TopMenu', 'mz_ShikonNoTama_AddTopMenu');
+}
+
+function mz_ShikonNoTama_AddTopMenu(&$m)
+{
+  global $zbp;
+  $m[] = MakeTopMenu("root", '碎雨集', $zbp->host . "zb_users/plugin/mz_ShikonNoTama/main.php", "", "topmenu_mz_ShikonNoTama", "icon-window-fill");
 }
 
 function mz_ShikonNoTama_Run()
@@ -14,10 +21,9 @@ function mz_ShikonNoTama_Run()
     return false;
   }
   $rssList = mz_ShikonNoTama_ReadCFG("rssList");
-  foreach ($rssList as $rssUrl) {
-    $rltData = mz_ShikonNoTama_GetRSS("{$rssUrl}?mz_ShikonNoTama=on");
-    mz_ShikonNoTama_SaveRLT2JSON($rltData);
-  }
+  $pickUrl = $rssList[array_rand($rssList, 1)];
+  $rltData = mz_ShikonNoTama_GetRSS("{$pickUrl}?mz_ShikonNoTama=on");
+  mz_ShikonNoTama_SaveRLT2JSON($rltData);
 }
 
 function mz_ShikonNoTama_Path($file, $t = 'path')
@@ -88,9 +94,12 @@ function mz_ShikonNoTama_GetRSS($url)
   global $zbp;
   $cache = mz_ShikonNoTama_Path("cache");
   $feed = new SimplePie($url, $cache);
+  // $feed->enable_cache(false);
   // $feed->enable_order_by_date(false);
-  $success = $feed->init();
   // $feed->handle_content_type();
+  $success = $feed->init();
+  mz_ShikonNoTama_Debug($url);
+  mz_ShikonNoTama_Debug((int)$success);
   $rltData = array();
   if ($success) {
     $feedItems = $feed->get_items();
@@ -102,11 +111,14 @@ function mz_ShikonNoTama_GetRSS($url)
     foreach ($feedItems as $item) {
       $itemContent = $item->get_content();
       $itemDate = $item->get_date('U');
+      // mz_ShikonNoTama_Debug($itemContent);
       if (strpos($itemContent, $PubWord) !== false && strpos($itemContent, "{$PubWord}Block") === false) {
         $rltData[$itemDate] = array("content" => $itemContent, "time" => date("Y-m-d H:i", $itemDate));
+        mz_ShikonNoTama_Debug($itemContent . " " . $rltData[$itemDate]["time"]);
       }
     }
   }
+  mz_ShikonNoTama_Debug("\n");
   return $rltData;
 }
 
@@ -141,4 +153,20 @@ function mz_ShikonNoTama_View()
     $jsonHref = str_replace($zbp->path, $zbp->host, $jsonPath);
     echo strtr($tpl, array("-name-" => $jsonName, "-href-" => $jsonHref));
   }
+}
+
+function mz_ShikonNoTama_a($href, $title, $text = "")
+{
+  if (empty($text)) {
+    $text = $href;
+  }
+  return "<a target=\"_blank\" href=\"{$href}\" title=\"{$title}\">$text</a>";
+}
+
+function mz_ShikonNoTama_Debug($str)
+{
+  $file = mz_ShikonNoTama_Path("cache/debug.txt");
+  $str .= "\n";
+  $str = FormatString($str, "[nohtml]");
+  file_put_contents($file, $str, FILE_APPEND);
 }

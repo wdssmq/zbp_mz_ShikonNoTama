@@ -41,7 +41,10 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 ?>
 <link rel="stylesheet" href="css/style.css">
 <div id="divMain">
-  <div class="divHeader"><?php echo $blogtitle; ?></div>
+  <div class="divHeader">
+    <?php echo $blogtitle; ?>
+    <small><a title="刷新" href="javascript:;" onclick="location.reload();" style="font-size: 16px;display: inline-block;margin-left: 5px;">刷新</a></small>
+  </div>
   <div class="SubMenu">
     <a href="main.php" title="首页"><span class="m-left m-now">首页</span></a>
     <?php require "about.php"; ?>
@@ -70,7 +73,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
         </tr>
       </table>
     </form>
-    <p class="mz-snt-box">访问触发：<?php echo $zbp->feedurl; ?></p>
+    <p class="mz-snt-box">访问触发：<?php echo mz_ShikonNoTama_a($zbp->feedurl, "RSS 地址"); ?></p>
     <div class="mz-snt-box"><?php mz_ShikonNoTama_View(); ?></div>
     <div class="mz-snt-tool hidden mz-snt-box">工具条：<a class="mz-snt-edt" title="切换隐藏按钮显示" href="javascript:;">启用编辑</a> / <a class="mz-snt-show" title="显示隐藏的项目" href="javascript:;">显示全部</a> / 隐藏状态将记录在 localStorage 中</div>
     <div class="js-view-content mz-snt-box"></div>
