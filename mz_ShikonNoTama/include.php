@@ -44,6 +44,12 @@ function mz_ShikonNoTama_Path($file, $t = 'path')
 
 function InstallPlugin_mz_ShikonNoTama()
 {
+  global $zbp;
+  if (!$zbp->Config('mz_ShikonNoTama')->HasKey("tplHead")){
+    $zbp->Config('mz_ShikonNoTama')->tplHead = '<h2>{ firstDay } ~ { lastDay }</h2>';
+    $zbp->SaveConfig('mz_ShikonNoTama');
+  }
+  // 初始化配置文件
   $cfgFile = mz_ShikonNoTama_Path("cfg");
   $cfgDir = dirname($cfgFile);
   if (!is_dir($cfgDir)) {
@@ -53,13 +59,20 @@ function InstallPlugin_mz_ShikonNoTama()
   if (!is_file($cfgFile)) {
     file_put_contents($cfgFile, json_encode(array('rssList' => array())));
   }
+  // 缓存目录
   $dir = mz_ShikonNoTama_Path("cache");
   if (!is_dir($dir)) {
     @mkdir($dir, 0755);
   }
+  // 存放抓取结果
   $dir = mz_ShikonNoTama_Path("usr");
   if (!is_dir($dir)) {
     @mkdir($dir, 0755);
+  }
+  // 调试文件删除
+  $file = mz_ShikonNoTama_Path("cache/debug.txt");
+  if (!$zbp->option['ZC_DEBUG_MODE'] && is_file($file)) {
+    unlink($file);
   }
 }
 
@@ -98,8 +111,8 @@ function mz_ShikonNoTama_GetRSS($url)
   // $feed->enable_order_by_date(false);
   // $feed->handle_content_type();
   $success = $feed->init();
-  mz_ShikonNoTama_Debug($url);
-  mz_ShikonNoTama_Debug((int)$success);
+  // mz_ShikonNoTama_Debug($url);
+  // mz_ShikonNoTama_Debug((int)$success);
   $rltData = array();
   if ($success) {
     $feedItems = $feed->get_items();
@@ -114,17 +127,17 @@ function mz_ShikonNoTama_GetRSS($url)
       // mz_ShikonNoTama_Debug($itemContent);
       if (strpos($itemContent, $PubWord) !== false && strpos($itemContent, "{$PubWord}Block") === false) {
         $rltData[$itemDate] = array("content" => $itemContent, "time" => date("Y-m-d H:i", $itemDate));
-        mz_ShikonNoTama_Debug($itemContent . " " . $rltData[$itemDate]["time"]);
+        // mz_ShikonNoTama_Debug($itemContent, $rltData[$itemDate]["time"]);
       }
     }
   }
-  mz_ShikonNoTama_Debug("\n");
+  // mz_ShikonNoTama_Debug("\n");
   return $rltData;
 }
 
 function mz_ShikonNoTama_SaveRLT2JSON($rltData)
 {
-  foreach ($rltData as $time => $content) {
+  foreach ($rltData as $time => $item) {
     $curTamp = mz_ShikonNoTama_GetCurMonday($time);
     $curTampStr = date("Y-m-d", $curTamp);
     $curFile = mz_ShikonNoTama_Path("usr/{$curTampStr}.json");
@@ -132,15 +145,15 @@ function mz_ShikonNoTama_SaveRLT2JSON($rltData)
     if (is_file($curFile)) {
       $curData = json_decode(file_get_contents($curFile), true);
     }
-    $curData[$time] = FormatString($content, "[nohtml]");
+    $curData[$time] = FormatString($item, "[nohtml]");
     file_put_contents($curFile, json_encode($curData));
   }
 }
 
 function mz_ShikonNoTama_GetCurMonday($time)
 {
-  $w = date("w", $time);
-  return $time - ($time % 86400) - (86400 * ($w - 1)) - 3600 * 8 + 1;
+  $w = date("N", $time);
+  return $time - ($time % 86400) - (86400 * ($w - 1)) - 3600 * 8;
 }
 
 function mz_ShikonNoTama_View()
@@ -165,6 +178,10 @@ function mz_ShikonNoTama_a($href, $title, $text = "")
 
 function mz_ShikonNoTama_Debug($str)
 {
+  $args = func_get_args();
+  if (count($args) > 1) {
+    $str = join("，", $args);
+  }
   $file = mz_ShikonNoTama_Path("cache/debug.txt");
   $str .= "\n";
   $str = FormatString($str, "[nohtml]");

@@ -32,10 +32,11 @@ if ($act == 'save') {
 }
 
 InstallPlugin_mz_ShikonNoTama();
+$enCodeFeed = urlencode("{$zbp->host}feed.php");
 
 $rssList = mz_ShikonNoTama_ReadCFG("rssList", "string");
 
-$blogtitle = '碎语集';
+$blogtitle = '碎雨集';
 require $blogpath . 'zb_system/admin/admin_header.php';
 require $blogpath . 'zb_system/admin/admin_top.php';
 ?>
@@ -43,7 +44,6 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 <div id="divMain">
   <div class="divHeader">
     <?php echo $blogtitle; ?>
-    <small><a title="刷新" href="javascript:;" onclick="location.reload();" style="font-size: 16px;display: inline-block;margin-left: 5px;">刷新</a></small>
   </div>
   <div class="SubMenu">
     <a href="main.php" title="首页"><span class="m-left m-now">首页</span></a>
@@ -68,20 +68,28 @@ require $blogpath . 'zb_system/admin/admin_top.php';
           <td>提取 RSS 输出中含有该关键词的项</td>
         </tr>
         <tr>
+          <td>头部模板</td>
+          <td><?php zbpform::textarea("tplHead", htmlspecialchars($zbp->Config("mz_ShikonNoTama")->tplHead), "90%"); ?></td>
+          <td>可用标签：{ firstDay } { lastDay }</td>
+        </tr>
+        <tr>
           <td></td>
           <td colspan="2"><input type="submit" value="提交" /></td>
         </tr>
       </table>
     </form>
     <p class="mz-snt-box">访问触发：<?php echo mz_ShikonNoTama_a($zbp->feedurl, "RSS 地址"); ?></p>
+    <p class="mz-snt-box">订阅：<?php echo mz_ShikonNoTama_a("https://feeds.pub/feed/{$enCodeFeed}", "订阅"); ?></p>
+    <p class="mz-snt-box">订阅：<?php echo mz_ShikonNoTama_a("https://www.innoreader.com/feed/{$enCodeFeed}", "订阅"); ?></p>
     <div class="mz-snt-box"><?php mz_ShikonNoTama_View(); ?></div>
     <div class="mz-snt-tool hidden mz-snt-box">工具条：<a class="mz-snt-edt" title="切换隐藏按钮显示" href="javascript:;">启用编辑</a> / <a class="mz-snt-show" title="显示隐藏的项目" href="javascript:;">显示全部</a> / 隐藏状态将记录在 localStorage 中</div>
-    <div class="js-view-content mz-snt-box"></div>
+    <div class="mz-snt-view mz-snt-box"></div>
   </div>
 </div>
 <script>
   const strPubWord = '<?php echo $zbp->Config("mz_ShikonNoTama")->PubWord; ?>';
 </script>
+<script class="tpl-view-head" type="text/plain"><?php echo $zbp->Config("mz_ShikonNoTama")->tplHead;?></script>
 <script src="script/script.js"></script>
 <?php
 require $blogpath . 'zb_system/admin/admin_footer.php';
