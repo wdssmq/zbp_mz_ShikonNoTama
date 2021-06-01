@@ -5,23 +5,41 @@ $(function () {
   } else {
     lsConfig = JSON.parse(lsConfig);
   }
-  const gob_config = {};
+  const gob_config = { edtOn: false };
+  // 启用编辑
   $(".mz-snt-edt").click(function () {
+    if (gob_config.edtOn) {
+      $(".mz-snt-item.hidden-flag").addClass("hidden");
+      gob_config.edtOn = false;
+    } else {
+      $(".mz-snt-item.hidden-flag").removeClass("hidden");
+      gob_config.edtOn = true;
+    }
+    // $(".mz-snt-item.hidden-flag").toggleClass("hidden");
     $(".item-hide-btn").toggleClass("hidden");
   });
+  // 显示全部
   $("a.mz-snt-show").click(function () {
-    $(".mz-snt-item.hidden").addClass("gray-1").removeClass("hidden");
+    $(".mz-snt-item.hidden-flag").toggleClass("hidden");
   });
-  $("a.js-view").click(function () {
+  // 查看
+  $(".mz-stn-title.js-view").click(function () {
     const url = $(this).data("href");
     gob_config.firstDay = Date.parse($(this).attr("title"));
     gob_config.lastDay = gob_config.firstDay + (86400000 * 6);
     fnAjax(url, fnFormat);
   });
+  // 隐藏切换
   $(".mz-snt-view").on("click", ".item-hide-btn", function () {
     const key = $(this).data("key");
-    $(`.key-${key}`).addClass("hidden");
-    lsConfig.hide.push(key);
+    const setHide = new Set(lsConfig.hide);
+    if (setHide.has(key)) {
+      setHide.delete(key);
+    } else {
+      setHide.add(key);
+    }
+    $(`.key-${key}`).toggleClass("hidden-flag");
+    lsConfig.hide = [...setHide];
     localStorage["mz-snt-confg"] = JSON.stringify(lsConfig);
   });
   function fnSrollToEL(target) {
@@ -48,7 +66,7 @@ $(function () {
     fnSrollToEL(".mz-snt-view");
     $(".mz-snt-view").html(rltHTML);
     lsConfig.hide.forEach(key => {
-      $(`.key-${key}`).addClass("hidden");
+      $(`.key-${key}`).addClass("hidden hidden-flag");
     });
     if (gob_config.firstDay) {
       const firstDay = new Date(gob_config.firstDay);

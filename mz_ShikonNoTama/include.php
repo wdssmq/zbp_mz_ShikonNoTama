@@ -159,7 +159,7 @@ function mz_ShikonNoTama_GetCurMonday($time)
 function mz_ShikonNoTama_View()
 {
   global $zbp;
-  $tpl = '<p><a class="js-view" data-href="-href-" title="-name-" href="javascript:;">-name-.json</a></p>';
+  $tpl = '<p><a class="mz-stn-title js-view" data-href="-href-" title="-name-" href="javascript:;">-name-.json</a></p>';
   $jsonDir = mz_ShikonNoTama_Path("usr");
   $jsonFiles = GetFilesInDir($jsonDir, "json");
   foreach ($jsonFiles as $jsonName => $jsonPath) {

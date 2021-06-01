@@ -7,11 +7,11 @@
   visibility: hidden;
 }
 
-.gray-1 {
+.hidden-flag {
   color: #808080;
 }
 
-.mz-snt-item.gray-1 {
+.mz-snt-item.hidden-flag {
   border-left: 1px solid #808080;
   padding-left: 0.3rem;
 }
