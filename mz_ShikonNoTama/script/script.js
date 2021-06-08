@@ -80,6 +80,11 @@ $(function () {
       });
       $(".view-head").html(s);
     }
+    try {
+      fnViewEnd();
+    } catch (error) {
+      console.log(error);
+    }
   }
   function fnAjax(url, cb) {
     $.ajax({

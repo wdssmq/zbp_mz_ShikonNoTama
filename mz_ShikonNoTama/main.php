@@ -73,6 +73,11 @@ require $blogpath . 'zb_system/admin/admin_top.php';
           <td>可用标签：{ firstDay } { lastDay }</td>
         </tr>
         <tr>
+          <td>回调函数</td>
+          <td><?php zbpform::textarea("jsCalBak", htmlspecialchars($zbp->Config("mz_ShikonNoTama")->jsCalBak), "90%"); ?></td>
+          <td>检出内容的后续处理</td>
+        </tr>
+        <tr>
           <td></td>
           <td colspan="2"><input type="submit" value="提交" /></td>
         </tr>
@@ -89,7 +94,12 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 <script>
   const strPubWord = '<?php echo $zbp->Config("mz_ShikonNoTama")->PubWord; ?>';
 </script>
-<script class="tpl-view-head" type="text/plain"><?php echo $zbp->Config("mz_ShikonNoTama")->tplHead;?></script>
+<script class="tpl-view-head" type="text/plain"><?php echo $zbp->Config("mz_ShikonNoTama")->tplHead; ?></script>
+<script>
+  const fnViewEnd = function() {
+    <?php echo $zbp->Config("mz_ShikonNoTama")->jsCalBak; ?>
+  };
+</script>
 <script src="script/script.js"></script>
 <?php
 require $blogpath . 'zb_system/admin/admin_footer.php';
