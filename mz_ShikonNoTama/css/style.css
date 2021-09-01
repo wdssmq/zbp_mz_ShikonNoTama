@@ -7,6 +7,10 @@
   visibility: hidden;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .hidden-flag {
   color: #808080;
 }

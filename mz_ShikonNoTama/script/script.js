@@ -24,6 +24,8 @@ $(function () {
   });
   // 查看
   $(".mz-stn-title.js-view").click(function () {
+    $(".mz-stn-title.js-view").removeClass("bold");
+    $(this).addClass("bold");
     const url = $(this).data("href");
     gob_config.firstDay = Date.parse($(this).attr("title"));
     gob_config.lastDay = gob_config.firstDay + (86400000 * 6);
@@ -58,6 +60,7 @@ $(function () {
         const element = data[key];
         const regexp = new RegExp(`#?${strPubWord}`, "g");
         element.content = element.content.replace(regexp, "").trim();
+        element.content = element.content.replace(/\\n|\\\|/g, "</p><p>");
         const curContent = `<div class="key-${key} mz-snt-item"><h3>${element.time} <a class="item-hide-btn hidden" data-key="${key}" href="javascript:;">隐藏</a></h3><p>${element.content}</p></div>`;
         rltHTML += curContent;
       }
