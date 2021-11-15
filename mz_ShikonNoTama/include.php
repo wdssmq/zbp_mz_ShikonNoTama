@@ -47,6 +47,7 @@ function InstallPlugin_mz_ShikonNoTama()
   global $zbp;
   if (!$zbp->Config('mz_ShikonNoTama')->HasKey("tplHead")) {
     $zbp->Config('mz_ShikonNoTama')->tplHead = '<h2>{ firstDay } ~ { lastDay }</h2>';
+    $zbp->Config("mz_ShikonNoTama")->PubWord = "#PubWord";
     $zbp->SaveConfig('mz_ShikonNoTama');
   }
   // 初始化配置文件
@@ -159,14 +160,16 @@ function mz_ShikonNoTama_GetCurMonday($time)
 function mz_ShikonNoTama_View()
 {
   global $zbp;
-  $curTamp = time("Y-m-d-H-i");
-  $tpl = '<p><a class="mz-stn-title js-view" data-href="-href-" title="-name-" href="javascript:;">-name-.json</a></p>';
+  $curTamp = time();
+  $tpl = '<p>-num-. <a class="mz-stn-title js-view" data-href="-href-" title="-name-" href="javascript:;">-name-.json</a></p>';
   $jsonDir = mz_ShikonNoTama_Path("usr");
   $jsonFiles = GetFilesInDir($jsonDir, "json");
+  $serNum = 1;
   foreach ($jsonFiles as $jsonName => $jsonPath) {
     $jsonHref = str_replace($zbp->path, $zbp->host, $jsonPath);
     $jsonHref .= "?v={$curTamp}";
-    echo strtr($tpl, array("-name-" => $jsonName, "-href-" => $jsonHref));
+    echo strtr($tpl, array("-num-" => $serNum, "-name-" => $jsonName, "-href-" => $jsonHref));
+    $serNum++;
   }
 }
 
