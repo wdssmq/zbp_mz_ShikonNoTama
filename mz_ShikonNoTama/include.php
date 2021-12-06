@@ -161,7 +161,7 @@ function mz_ShikonNoTama_View()
 {
   global $zbp;
   $curTamp = time();
-  $tpl = '<p>-num-. <a class="mz-stn-title js-view" data-href="-href-" title="-name-" href="javascript:;">-name-.json</a></p>';
+  $tpl = '<p>-num-. <a id="item--num-" data-num="-num-" class="mz-stn-title js-view" data-href="-href-" title="-name-" href="javascript:;">-name-.json</a></p>';
   $jsonDir = mz_ShikonNoTama_Path("usr");
   $jsonFiles = GetFilesInDir($jsonDir, "json");
   $serNum = 1;
