@@ -151,10 +151,24 @@ function mz_ShikonNoTama_SaveRLT2JSON($rltData)
   }
 }
 
+// N                   丨 ISO-8601 格式数字表示的星期中的第几天 丨 1（表示星期一）到 7（表示星期天）
+// w                   丨 星期中的第几天，数字表示               丨 0（表示星期天）到 6（表示星期六）
+// D                   丨 星期中的第几天，文本表示，3 个字母     丨 Mon 到 Sun
+// l（“L”的小写字母） 丨 星期几，完整的文本格式                   丨 Sunday 到 Saturday
+
 function mz_ShikonNoTama_GetCurMonday($time)
 {
-  $w = date("N", $time);
-  return $time - ($time % 86400) - (86400 * ($w - 1)) - 3600 * 8;
+  // 错误实现
+  // $w = date("N", $time);
+  // return $time - ($time % 86400) - 86400 * ($w - 1) - 3600 * 8;
+
+  // 正确实现
+  $week = date("N", $time);
+  return $time - ($week - 1) * 86400;
+
+  // 如果确实要拿 00:00 好像可以这样
+  // $week = date("N", $time);
+  // return $time - ($week - 1) * 86400 - (($time + 28800) % 86400);
 }
 
 function mz_ShikonNoTama_View()
