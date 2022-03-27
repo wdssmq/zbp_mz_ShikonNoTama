@@ -1,4 +1,13 @@
 $(function () {
+  (() => {
+    const clipboard = new ClipboardJS('.mz-snt-copy');
+    clipboard.on('success', function (e) {
+      // count lines in text
+      const lines = e.text.split('\n').length;
+      e.trigger.innerHTML = `「已复制(${lines}行)」`;
+      e.clearSelection();
+    });
+  })();
   let lsConfig = localStorage["mz-snt-confg"];
   if (!lsConfig) {
     lsConfig = { hide: [] };
@@ -108,7 +117,11 @@ $(function () {
       }
     }
     $(".mz-snt-tool").removeClass("hidden");
-    fnSrollToEL(".mz-snt-view");
+    if (!gob_config.edtMore) {
+      fnSrollToEL(".mz-snt-view");
+    } else {
+      fnSrollToEL(".mz-snt-footer");
+    }
     gob_config.viewHTML = rltHTML;
     $(".mz-snt-view").html(rltHTML);
     lsConfig.hide.forEach((key) => {
@@ -123,6 +136,7 @@ $(function () {
         firstDay: firstDay.Format("yyyy/MM/dd"),
         lastDay: lastDay.Format("yyyy/MM/dd"),
       });
+      $(".mz-snt-copy").removeClass("hidden").text("「复制」");
       $(".view-head").html(s);
     }
     try {
@@ -154,11 +168,11 @@ $(function () {
         addLine = function (text) {
           code.push(
             "r.push('" +
-              text
-                .replace(/\'/g, "\\'")
-                .replace(/\n/g, "\\n")
-                .replace(/\r/g, "\\r") +
-              "');"
+            text
+              .replace(/\'/g, "\\'")
+              .replace(/\n/g, "\\n")
+              .replace(/\r/g, "\\r") +
+            "');"
           );
         };
       tpl = tpl.replace(/\s\\\n/g, "<br>");

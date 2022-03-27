@@ -41,6 +41,7 @@ require $blogpath . 'zb_system/admin/admin_header.php';
 require $blogpath . 'zb_system/admin/admin_top.php';
 ?>
 <link rel="stylesheet" href="css/style.css">
+<script src="script/clipboard.min.js"></script>
 <div id="divMain">
   <div class="divHeader">
     <?php echo $blogtitle; ?>
@@ -89,9 +90,13 @@ require $blogpath . 'zb_system/admin/admin_top.php';
     <!-- 数据列表 -->
     <div class="mz-snt-box"><?php mz_ShikonNoTama_View(); ?></div>
     <!-- 工具条 -->
-    <div class="mz-snt-tool hidden mz-snt-box">工具条：<a class="mz-snt-edt" title="切换隐藏按钮显示" href="javascript:;">启用编辑</a> / <a class="mz-snt-show" title="显示隐藏的项目" href="javascript:;">显示全部</a> / 隐藏状态将记录在 localStorage 中</div>
+    <div class="mz-snt-tool hidden mz-snt-box">
+      工具条：<a class="mz-snt-edt" title="切换隐藏按钮显示" href="javascript:;">启用编辑</a> / <a class="mz-snt-show" title="显示隐藏的项目" href="javascript:;">显示全部</a> / 隐藏状态将记录在 localStorage 中
+    </div>
     <div class="mz-snt-view mz-snt-box"></div>
-    <div class="mz-snt-box"><a href="javascript:;" class="mz-snt-next hidden">载入下一周数据</a></div>
+    <div class="mz-snt-footer mz-snt-box">
+      <a href="javascript:;" class="mz-snt-next hidden">「载入下一周数据」</a>
+      <a href="javascript:;" class="mz-snt-copy hidden" data-clipboard-target=".mz-snt-view">「复制」</a></div>
   </div>
 </div>
 <script>
