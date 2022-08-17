@@ -71,7 +71,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
         <tr>
           <td>头部模板</td>
           <td><?php zbpform::textarea("tplHead", htmlspecialchars($zbp->Config("mz_ShikonNoTama")->tplHead), "90%"); ?></td>
-          <td>可用标签：{ firstDay } { lastDay }</td>
+          <td>可用标签：{ firstDay } { lastDay } { nextDay }</td>
         </tr>
         <tr>
           <td>回调函数</td>
@@ -108,7 +108,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
     <?php echo $zbp->Config("mz_ShikonNoTama")->jsCalBak; ?>
   };
 </script>
-<script src="script/script.js"></script>
+<script src="script/script.js?v=20220817213036"></script>
 <?php
 require $blogpath . 'zb_system/admin/admin_footer.php';
 RunTime();

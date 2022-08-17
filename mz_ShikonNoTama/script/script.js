@@ -58,6 +58,7 @@ $(function () {
     oItem = parseItem($(this));
     gob_config.firstDay = fnStrToDate(oItem.title);
     gob_config.lastDay = fnGetCurSunday(oItem.title);
+    gob_config.nextDay = fnGetNextDay(gob_config.lastDay);
     gob_config.pickList = [oItem.num];
     gob_config.lstNum = oItem.num;
     gob_config.edtMore = false;
@@ -74,6 +75,7 @@ $(function () {
     oItem = parseItem($el);
     // gob_config.firstDay = fnStrToDate(oItem.title);
     gob_config.lastDay = fnGetCurSunday(oItem.title);
+    gob_config.nextDay = fnGetNextDay(gob_config.lastDay);
     gob_config.pickList.push(oItem.num);
     gob_config.lstNum = oItem.num;
     gob_config.edtMore = true;
@@ -128,13 +130,14 @@ $(function () {
       $(`.key-${key}`).addClass("hidden hidden-flag");
     });
     if (gob_config.firstDay) {
-      const { firstDay, lastDay } = gob_config;
+      const { firstDay, lastDay, nextDay } = gob_config;
       // console.log(gob_config);
       // console.log(firstDay, lastDay);
       const tpl = new Template($(".tpl-view-head").html());
       const s = tpl.render({
         firstDay: firstDay.Format("yyyy/MM/dd"),
         lastDay: lastDay.Format("yyyy/MM/dd"),
+        nextDay: nextDay.Format("yyyy-MM-dd HH:mm:ss"),
       });
       $(".mz-snt-copy").removeClass("hidden").text("「复制」");
       $(".view-head").html(s);
@@ -229,6 +232,15 @@ $(function () {
     const arr = str.split("-");
     const date = new Date(arr[0], arr[1] - 1, arr[2]);
     return date;
+  }
+
+  // 获取日期的第二天
+  function fnGetNextDay(date) {
+    const nextDate = new Date();
+    nextDate.setFullYear(date.getFullYear());
+    nextDate.setMonth(date.getMonth());
+    nextDate.setDate(date.getDate() + 1);
+    return nextDate;
   }
 
   // 获取日期所在周的星期日
