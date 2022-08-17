@@ -1,9 +1,11 @@
+/* global $:false, ClipboardJS:false, strPubWord:false */
+/* global fnViewEnd:false */
 $(function () {
   (() => {
-    const clipboard = new ClipboardJS('.mz-snt-copy');
-    clipboard.on('success', function (e) {
+    const clipboard = new ClipboardJS(".mz-snt-copy");
+    clipboard.on("success", function (e) {
       // count lines in text
-      const lines = e.text.split('\n').length;
+      const lines = e.text.split("\n").length;
       e.trigger.innerHTML = `「已复制(${lines}行)」`;
       e.clearSelection();
     });
@@ -55,7 +57,7 @@ $(function () {
   $(".mz-stn-title.js-view").click(function () {
     $(".mz-stn-title.js-view").removeClass("bold");
     // JSON 链接解析
-    oItem = parseItem($(this));
+    const oItem = parseItem($(this));
     gob_config.firstDay = fnStrToDate(oItem.title);
     gob_config.lastDay = fnGetCurSunday(oItem.title);
     gob_config.nextDay = fnGetNextDay(gob_config.lastDay);
@@ -66,13 +68,14 @@ $(function () {
   });
   // 载入下一周的数据
   $(".mz-snt-next").click(function () {
-    num = gob_config.lstNum + 1;
-    $el = $(`#item-${num}`);
+    $(this).addClass("hidden");
+    const num = gob_config.lstNum + 1;
+    const $el = $(`#item-${num}`);
     if ($el.length === 0) {
       return;
     }
     // JSON 链接解析
-    oItem = parseItem($el);
+    const oItem = parseItem($el);
     // gob_config.firstDay = fnStrToDate(oItem.title);
     gob_config.lastDay = fnGetCurSunday(oItem.title);
     gob_config.nextDay = fnGetNextDay(gob_config.lastDay);
@@ -100,11 +103,11 @@ $(function () {
       {
         scrollTop: $(target).offset().top - 59,
       },
-      500
+      500,
     );
   }
   function fnFormat(data) {
-    let rltHTML = '<div class="view-head mz-snt-box"></div>';
+    let rltHTML = "<div class=\"view-head mz-snt-box\"></div>";
     if (gob_config.edtMore) {
       rltHTML = gob_config.viewHTML;
     }
@@ -159,71 +162,40 @@ $(function () {
     });
   }
 
+  // Template Class
   class Template {
-    constructor(tpl) {
-      let fn,
-        match,
-        code = [
-          "let r=[];",
-          "let _html = function (str) { return str.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };",
-        ],
-        re = /\{\s*([a-zA-Z\.\_0-9()]+)(\s*\|\s*safe)?\s*\}/m,
-        addLine = function (text) {
-          code.push(
-            "r.push('" +
-            text
-              .replace(/\'/g, "\\'")
-              .replace(/\n/g, "\\n")
-              .replace(/\r/g, "\\r") +
-            "');"
-          );
-        };
-      tpl = tpl.replace(/\s\\\n/g, "<br>");
-      while ((match = re.exec(tpl))) {
-        if (match.index > 0) {
-          addLine(tpl.slice(0, match.index));
-        }
-        if (match[2]) {
-          code.push("r.push(String(this." + match[1] + "));");
-        } else {
-          code.push("r.push(_html(String(this." + match[1] + ")));");
-        }
-        tpl = tpl.substring(match.index + match[0].length);
-      }
-      addLine(tpl);
-      // code.push('console.log(r.join(""));');
-      code.push('return r.join("").trim();');
-      fn = new Function(code.join("\n"));
-      this.render = function (model) {
-        return fn.apply(model);
-        s;
-      };
+    constructor(str) {
+      this.str = str.replace(/\s\\\n/g, "<br>");
+    }
+    render(data) {
+      return this.str.replace(/\{\s(.*?)\s\}/g, (match, key) => {
+        return data[key];
+      });
     }
   }
 
+  // 日期格式化
   Date.prototype.Format = function (fmt) {
-    var o = {
-      "M+": this.getMonth() + 1, //月份
-      "d+": this.getDate(), //日
-      "H+": this.getHours(), //小时
-      "m+": this.getMinutes(), //分
-      "s+": this.getSeconds(), //秒
-      "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-      S: this.getMilliseconds(), //毫秒
+    const o = {
+      "y+": this.getFullYear(), // 年份
+      "M+": this.getMonth() + 1, // 月份
+      "d+": this.getDate(), // 日
+      "H+": this.getHours(), // 小时
+      "m+": this.getMinutes(), // 分
+      "s+": this.getSeconds(), // 秒
+      "q+": Math.floor((this.getMonth() + 3) / 3), // 季度
+      S: this.getMilliseconds(), // 毫秒
     };
-    if (/(y+)/.test(fmt))
-      fmt = fmt.replace(
-        RegExp.$1,
-        (this.getFullYear() + "").substr(4 - RegExp.$1.length)
-      );
-    for (var k in o)
-      if (new RegExp("(" + k + ")").test(fmt))
+    for (let k in o) {
+      if (new RegExp(`(${k})`).test(fmt)) {
         fmt = fmt.replace(
           RegExp.$1,
           RegExp.$1.length == 1
             ? o[k]
-            : ("00" + o[k]).substr(("" + o[k]).length)
+            : ("0" + o[k]).slice(-RegExp.$1.length),
         );
+      }
+    }
     return fmt;
   };
 
