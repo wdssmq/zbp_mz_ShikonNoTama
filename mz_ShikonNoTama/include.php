@@ -146,6 +146,8 @@ function mz_ShikonNoTama_SaveRLT2JSON($rltData)
     if (is_file($curFile)) {
       $curData = json_decode(file_get_contents($curFile), true);
     }
+    $item = str_replace("</p><p>", "\\n", $item);
+    $item = str_replace("<br>", "\n", $item);
     $curData[$time] = FormatString($item, "[nohtml]");
     file_put_contents($curFile, json_encode($curData));
   }
