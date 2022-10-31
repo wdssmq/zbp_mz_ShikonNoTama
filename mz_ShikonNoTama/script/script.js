@@ -66,7 +66,7 @@ $(function () {
     const oItem = parseItem($(this));
     gob_config.firstDay = fnStrToDate(oItem.title);
     gob_config.lastDay = fnGetCurSunday(oItem.title);
-    gob_config.nextDay = fnGetNextDay(gob_config.lastDay);
+    gob_config.nextDay = fnGetNextDay(gob_config.lastDay, true);
     gob_config.pickList = [oItem.num];
     gob_config.lstNum = oItem.num;
     gob_config.edtMore = false;
@@ -85,7 +85,7 @@ $(function () {
     const oItem = parseItem($el);
     // gob_config.firstDay = fnStrToDate(oItem.title);
     gob_config.lastDay = fnGetCurSunday(oItem.title);
-    gob_config.nextDay = fnGetNextDay(gob_config.lastDay);
+    gob_config.nextDay = fnGetNextDay(gob_config.lastDay, true);
     gob_config.pickList.push(oItem.num);
     gob_config.lstNum = oItem.num;
     gob_config.edtMore = true;
@@ -225,12 +225,16 @@ $(function () {
   }
 
   // 获取日期的第二天
-  function fnGetNextDay(date) {
-    const nextDate = new Date();
-    nextDate.setFullYear(date.getFullYear());
-    nextDate.setMonth(date.getMonth());
-    nextDate.setDate(date.getDate() + 1);
-    return nextDate;
+  function fnGetNextDay(date, setCurTime = false) {
+    const nextDay = new Date(date.getTime() + 24 * 60 * 60 * 1000);
+    // 设置时间为当前
+    if (setCurTime) {
+      const curDate = new Date();
+      nextDay.setHours(curDate.getHours());
+      nextDay.setMinutes(curDate.getMinutes());
+      nextDay.setSeconds(curDate.getSeconds());
+    }
+    return nextDay;
   }
 
   // 获取日期所在周的星期日
