@@ -10,12 +10,14 @@ $(function () {
       e.clearSelection();
     });
   })();
+
   let lsConfig = localStorage["mz-snt-confg"];
   if (!lsConfig) {
     lsConfig = { hide: [] };
   } else {
     lsConfig = JSON.parse(lsConfig);
   }
+
   const gob_config = {
     edtOn: false,
     edtMore: false,
@@ -23,6 +25,7 @@ $(function () {
     lastDay: null,
     pickList: [],
   };
+
   // 启用编辑
   $(".mz-snt-edt").click(function () {
     if (gob_config.edtOn) {
@@ -35,10 +38,12 @@ $(function () {
     // $(".mz-snt-item.hidden-flag").toggleClass("hidden");
     $(".item-hide-btn").toggleClass("hidden");
   });
+
   // 显示全部
   $("a.mz-snt-show").click(function () {
     $(".mz-snt-item.hidden-flag").toggleClass("hidden");
   });
+
   // JSON 条目解析
   function parseItem($el) {
     $el.addClass("bold");
@@ -53,6 +58,7 @@ $(function () {
     }
     return { url, title, num };
   }
+
   // 查看
   $(".mz-stn-title.js-view").click(function () {
     $(".mz-stn-title.js-view").removeClass("bold");
@@ -66,6 +72,7 @@ $(function () {
     gob_config.edtMore = false;
     fnAjax(oItem.url, fnFormat);
   });
+
   // 载入下一周的数据
   $(".mz-snt-next").click(function () {
     $(this).addClass("hidden");
@@ -84,6 +91,7 @@ $(function () {
     gob_config.edtMore = true;
     fnAjax(oItem.url, fnFormat);
   });
+
   // 隐藏切换
   $(".mz-snt-view").on("click", ".item-hide-btn", function () {
     const key = $(this).data("key");
@@ -97,6 +105,7 @@ $(function () {
     lsConfig.hide = [...setHide];
     localStorage["mz-snt-confg"] = JSON.stringify(lsConfig);
   });
+
   function fnSrollToEL(target) {
     // console.log(target);
     $("body,html").animate(
@@ -106,11 +115,13 @@ $(function () {
       500,
     );
   }
+
   function fnFormat(data) {
     let rltHTML = "<div class=\"view-head mz-snt-box\"></div>";
     if (gob_config.edtMore) {
       rltHTML = gob_config.viewHTML;
     }
+
     for (const key in data) {
       if (Object.hasOwnProperty.call(data, key)) {
         const element = data[key];
@@ -121,17 +132,22 @@ $(function () {
         rltHTML += curContent;
       }
     }
+
     $(".mz-snt-tool").removeClass("hidden");
+
     if (!gob_config.edtMore) {
       fnSrollToEL(".mz-snt-view");
     } else {
       fnSrollToEL(".mz-snt-footer");
     }
+
     gob_config.viewHTML = rltHTML;
     $(".mz-snt-view").html(rltHTML);
+
     lsConfig.hide.forEach((key) => {
       $(`.key-${key}`).addClass("hidden hidden-flag");
     });
+
     if (gob_config.firstDay) {
       const { firstDay, lastDay, nextDay } = gob_config;
       // console.log(gob_config);
@@ -145,12 +161,14 @@ $(function () {
       $(".mz-snt-copy").removeClass("hidden").text("「复制」");
       $(".view-head").html(s);
     }
+
     try {
       fnViewEnd();
     } catch (error) {
       console.log(error);
     }
   }
+
   function fnAjax(url, cb) {
     $.ajax({
       url: url,
