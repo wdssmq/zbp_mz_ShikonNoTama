@@ -61,16 +61,19 @@ $(function () {
 
   // 查看
   $(".mz-stn-title.js-view").click(function () {
+    $el = $(this);
     $(".mz-stn-title.js-view").removeClass("bold");
+    $(".mz-stn-wrap-item").removeClass("pick");
+    $el.parent().addClass("pick");
     // JSON 链接解析
-    const oItem = parseItem($(this));
+    const oItem = parseItem($el);
     gob_config.firstDay = fnStrToDate(oItem.title);
     gob_config.lastDay = fnGetCurSunday(oItem.title);
     gob_config.nextDay = fnGetNextDay(gob_config.lastDay, true);
     gob_config.pickList = [oItem.num];
     gob_config.lstNum = oItem.num;
     gob_config.edtMore = false;
-    fnAjax(oItem.url, fnFormat);
+    fnAjax(oItem.url, $el, fnFormat);
   });
 
   // 载入下一周的数据
@@ -81,6 +84,7 @@ $(function () {
     if ($el.length === 0) {
       return;
     }
+    $el.parent().addClass("pick");
     // JSON 链接解析
     const oItem = parseItem($el);
     // gob_config.firstDay = fnStrToDate(oItem.title);
@@ -89,7 +93,7 @@ $(function () {
     gob_config.pickList.push(oItem.num);
     gob_config.lstNum = oItem.num;
     gob_config.edtMore = true;
-    fnAjax(oItem.url, fnFormat);
+    fnAjax(oItem.url, $el, fnFormat);
   });
 
   // 隐藏切换
@@ -116,11 +120,26 @@ $(function () {
     );
   }
 
-  function fnFormat(data) {
+  function fnFormat(data, $el) {
     let rltHTML = "<div class=\"view-head mz-snt-box\"></div>";
     if (gob_config.edtMore) {
       rltHTML = gob_config.viewHTML;
     }
+
+    const keys = Object.keys(data);
+    const cntNum = keys.length;
+    // 显示条目数
+    if (!$el.data("cnt")) {
+      $el.after(`<span class="mz-snt-cnt">(${cntNum})</span>`);
+      $el.data("cnt", cntNum);
+    }
+    // 获取 .mz-snt-cnt 的内容并累加
+    const $cntList = $(".pick .mz-snt-cnt");
+    let cntSum = 0;
+    $cntList.each(function () {
+      cntSum += parseInt($(this).text().replace(/\(|\)/g, ""));
+    });
+    $(".mz-snt-cnt-sum").text(`(${cntSum})`);
 
     for (const key in data) {
       if (Object.hasOwnProperty.call(data, key)) {
@@ -169,13 +188,13 @@ $(function () {
     }
   }
 
-  function fnAjax(url, cb) {
+  function fnAjax(url, $el, cb) {
     $.ajax({
       url: url,
       dataType: "json",
       success: function (data) {
         // console.log(data);
-        cb(data);
+        cb(data, $el);
       },
     });
   }
@@ -183,7 +202,7 @@ $(function () {
   // Template Class
   class Template {
     constructor(str) {
-      this.str = str.replace(/\s\\\n/g, "<br>");
+      this.str = str.replace(/\s\\\n/g, "<br>").replace(/\s\\$/, "<br>");
     }
     render(data) {
       return this.str.replace(/\{\s(.*?)\s\}/g, (match, key) => {

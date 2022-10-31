@@ -96,7 +96,9 @@ require $blogpath . 'zb_system/admin/admin_top.php';
     <div class="mz-snt-view mz-snt-box"></div>
     <div class="mz-snt-footer mz-snt-box">
       <a href="javascript:;" class="mz-snt-next hidden">「载入下一周数据」</a>
-      <a href="javascript:;" class="mz-snt-copy hidden" data-clipboard-target=".mz-snt-view">「复制」</a></div>
+      <a href="javascript:;" class="mz-snt-copy hidden" data-clipboard-target=".mz-snt-view">「复制」</a>
+      <span class="mz-snt-cnt-sum"></span>
+    </div>
   </div>
 </div>
 <script>
