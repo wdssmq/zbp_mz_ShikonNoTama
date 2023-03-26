@@ -1,4 +1,4 @@
-/* global $:false, ClipboardJS:false, strPubWord:false */
+/* global strPubWord:false */
 /* global fnViewEnd:false */
 $(function () {
   (() => {
@@ -61,7 +61,7 @@ $(function () {
 
   // 查看
   $(".mz-stn-title.js-view").click(function () {
-    $el = $(this);
+    const $el = $(this);
     $(".mz-stn-title.js-view").removeClass("bold");
     $(".mz-stn-wrap-item").removeClass("pick");
     $el.parent().addClass("pick");
