@@ -1,9 +1,9 @@
 /* global strPubWord:false */
 /* global fnViewEnd:false */
-$(function () {
+$(function() {
   (() => {
     const clipboard = new ClipboardJS(".mz-snt-copy");
-    clipboard.on("success", function (e) {
+    clipboard.on("success", function(e) {
       // count lines in text
       const lines = e.text.split("\n").length;
       e.trigger.innerHTML = `「已复制(${lines}行)」`;
@@ -27,7 +27,7 @@ $(function () {
   };
 
   // 启用编辑
-  $(".mz-snt-edt").click(function () {
+  $(".mz-snt-edt").click(function() {
     if (gob_config.edtOn) {
       $(".mz-snt-item.hidden-flag").addClass("hidden");
       gob_config.edtOn = false;
@@ -40,7 +40,7 @@ $(function () {
   });
 
   // 显示全部
-  $("a.mz-snt-show").click(function () {
+  $("a.mz-snt-show").click(function() {
     $(".mz-snt-item.hidden-flag").toggleClass("hidden");
   });
 
@@ -60,7 +60,7 @@ $(function () {
   }
 
   // 查看
-  $(".mz-stn-title.js-view").click(function () {
+  $(".mz-stn-title.js-view").click(function() {
     const $el = $(this);
     $(".mz-stn-title.js-view").removeClass("bold");
     $(".mz-stn-wrap-item").removeClass("pick");
@@ -77,7 +77,7 @@ $(function () {
   });
 
   // 载入下一周的数据
-  $(".mz-snt-next").click(function () {
+  $(".mz-snt-next").click(function() {
     $(this).addClass("hidden");
     const num = gob_config.lstNum + 1;
     const $el = $(`#item-${num}`);
@@ -97,7 +97,7 @@ $(function () {
   });
 
   // 隐藏切换
-  $(".mz-snt-view").on("click", ".item-hide-btn", function () {
+  $(".mz-snt-view").on("click", ".item-hide-btn", function() {
     const key = $(this).data("key");
     const setHide = new Set(lsConfig.hide);
     if (setHide.has(key)) {
@@ -136,7 +136,7 @@ $(function () {
     // 获取 .mz-snt-cnt 的内容并累加
     const $cntList = $(".pick .mz-snt-cnt");
     let cntSum = 0;
-    $cntList.each(function () {
+    $cntList.each(function() {
       cntSum += parseInt($(this).text().replace(/\(|\)/g, ""));
     });
     $(".mz-snt-cnt-sum").text(`(${cntSum})`);
@@ -192,7 +192,7 @@ $(function () {
     $.ajax({
       url: url,
       dataType: "json",
-      success: function (data) {
+      success: function(data) {
         // console.log(data);
         cb(data, $el);
       },
@@ -212,7 +212,7 @@ $(function () {
   }
 
   // 日期格式化
-  Date.prototype.Format = function (fmt) {
+  Date.prototype.Format = function(fmt) {
     const o = {
       "y+": this.getFullYear(), // 年份
       "M+": this.getMonth() + 1, // 月份
